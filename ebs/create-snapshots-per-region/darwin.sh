@@ -44,6 +44,8 @@ EOF
   exit 0
 fi
 
+
+REGION=$1
 #init
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE=/tmp/snap$(openssl rand -hex 12)
@@ -96,7 +98,7 @@ snapshot_one_volume() {
   VOLUME_ID=$2
   VOLUME_INDEX=$3
   PROVIDER_REGION=$4
-  EXPIRES_AT=$(date -d "+1 month" +"%Y-%m-%d %H:%M:%S")
+  EXPIRES_AT=$(date -v +1m "+%Y-%m-%d %H:%M:%S")
 
   aws ec2 create-snapshot --volume-id $VOLUME_ID \
     --description "Automated Snapshots of volume $VOLUME_ID instance $INSTANCE_ID" \
@@ -104,7 +106,7 @@ snapshot_one_volume() {
     --region $PROVIDER_REGION
 }
 
-snapshot_whole_region $AWS_REGION
+snapshot_whole_region $REGION
 
 #clean up
 rm -rf $WORKSPACE
